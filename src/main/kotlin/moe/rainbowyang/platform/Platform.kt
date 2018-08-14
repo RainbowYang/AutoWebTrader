@@ -1,12 +1,17 @@
 package moe.rainbowyang.platform
 
+import moe.rainbowyang.platform.okex.OKEX_URL
+import moe.rainbowyang.util.OkHttpHandle
+
 /**
  * 平台类，用于汇总对于平台的api操作
  *
  * @author Rainbow Yang
  */
-abstract class Platform {
+abstract class Platform(checkNet: String) {
     var account: Account? = null
+
+    val okHttpHandle = OkHttpHandle(checkNet)
 
     /** 注册api账号*/
     fun register(account: Account) {
@@ -28,4 +33,7 @@ abstract class Platform {
     abstract fun kline(symbol: String, type: String, size: Int): String
 
     // Account-Unneeded END
+
+    fun get(url: String, vararg parameter: Pair<String, String>): String =
+            okHttpHandle.get(url, linkedMapOf(*parameter))
 }
