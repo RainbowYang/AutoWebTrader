@@ -21,6 +21,10 @@ class Okex : Platform(OKEX_URL) {
 
     override fun userInfo() = post(USERINFO_URL).fromJson<UserInfo>()
 
+    fun freeBill() = userInfo().info.funds.free
+
+    fun get(coin: String) = freeBill().get(coin)
+
     override fun trade(trans: String, payment: String, type: String, price: Double, amount: Double) =
             post(TRADE_URL, SYMBOL to (trans with payment), TYPE to type, PRICE to price, AMOUNT to amount)
 

@@ -5,7 +5,6 @@ import moe.rainbowyang.util.API_KEY
 import moe.rainbowyang.util.OkHttpHandle
 import moe.rainbowyang.util.SIGN
 import moe.rainbowyang.util.Signer
-import kotlin.math.sign
 
 /**
  * 平台类，用于汇总对于平台的api操作
@@ -38,26 +37,28 @@ abstract class Platform(checkNet: String) {
     // Account-Unneeded START ↓
 
     /** 获取币币交易对的当前行情*/
-    abstract fun ticker(trans: String, payment: String): Ticker
+    open fun ticker(trans: String, payment: String): Ticker = throw UnsupportedOperationException()
 
     /** 获取币币市场深度，默认200*/
-    abstract fun depth(trans: String, payment: String, size: Int = 200): Depth
+    open fun depth(trans: String, payment: String, size: Int = 200): Depth = throw UnsupportedOperationException()
 
     /** 获取币币交易信息(60条)*/
-    abstract fun trades(trans: String, payment: String, since: Long): Trades
+    open fun trades(trans: String, payment: String, since: Long): Trades = throw UnsupportedOperationException()
 
     /** 获取币币K线数据*/
-    abstract fun kline(trans: String, payment: String, period: String, size: Int): KLine
+    open fun kline(trans: String, payment: String, period: String, size: Int): KLine =
+            throw UnsupportedOperationException()
 
     // Account-Unneeded END ↑
 
     // Account-Needed Start ↓
 
     /** 获取用户账户信息 */
-    abstract fun userInfo(): UserInfo
+    open fun userInfo(): UserInfo = throw UnsupportedOperationException()
 
     /** 发送交易请求 */
-    abstract fun trade(trans: String, payment: String, type: String, price: Double, amount: Double): String
+    open fun trade(trans: String, payment: String, type: String, price: Double, amount: Double): String =
+            throw UnsupportedOperationException()
 
     // Account-Needed END ↑
 

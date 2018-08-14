@@ -6,6 +6,21 @@ import java.util.*
  * @author Rainbow Yang
  */
 class KLine : LinkedList<KLine.KPoint>() {
+
+    val MA5 get() = MA(5)
+    val MA10 get() = MA(10)
+    val MA20 get() = MA(20)
+    val MA30 get() = MA(30)
+
+    fun MA(range: Int, from: Int = size - range): Double {
+
+        var sum = 0.0
+
+        (0 until range).forEach { sum += this[from + it].close }
+
+        return sum / range
+    }
+
     class KPoint : LinkedList<Double>() {
         val time: Long get() = this[0].toLong()
         val open: Double get() = this[1]
