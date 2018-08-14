@@ -1,10 +1,11 @@
 package moe.rainbowyang.platform
 
+import moe.rainbowyang.model.*
 import moe.rainbowyang.util.API_KEY
 import moe.rainbowyang.util.OkHttpHandle
 import moe.rainbowyang.util.SIGN
 import moe.rainbowyang.util.Signer
-import sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte1.other
+import kotlin.math.sign
 
 /**
  * 平台类，用于汇总对于平台的api操作
@@ -37,23 +38,23 @@ abstract class Platform(checkNet: String) {
     // Account-Unneeded START ↓
 
     /** 获取币币交易对的当前行情*/
-    abstract fun ticker(trans: String, payment: String): String
+    abstract fun ticker(trans: String, payment: String): Ticker
 
     /** 获取币币市场深度，默认200*/
-    abstract fun depth(trans: String, payment: String, size: Int = 200): String
+    abstract fun depth(trans: String, payment: String, size: Int = 200): Depth
 
     /** 获取币币交易信息(60条)*/
-    abstract fun trades(trans: String, payment: String, since: Long): String
+    abstract fun trades(trans: String, payment: String, since: Long): Trades
 
     /** 获取币币K线数据*/
-    abstract fun kline(trans: String, payment: String, period: String, size: Int): String
+    abstract fun kline(trans: String, payment: String, period: String, size: Int): KLine
 
     // Account-Unneeded END ↑
 
     // Account-Needed Start ↓
 
     /** 获取用户账户信息 */
-    abstract fun userInfo(): String
+    abstract fun userInfo(): UserInfo
 
     /** 发送交易请求 */
     abstract fun trade(trans: String, payment: String, type: String, price: Double, amount: Double): String
@@ -69,8 +70,7 @@ abstract class Platform(checkNet: String) {
     fun post(url: String, vararg parameter: Pair<String, String>): String {
         isAccountRegistered()
 
-        val sign = Signer.buildSign(parameter.toMap(), account!!.secretKey)
+        val sign = Signer.buildSign(linkedMapOf(API_KEY to apiKey, *parameter), account!!.secretKey)
         return okHttpHandle.post(url, linkedMapOf(API_KEY to apiKey, *parameter, SIGN to sign))
-
     }
 }

@@ -15,7 +15,11 @@ import java.net.Proxy.Type.*
  */
 class OkHttpHandle(checkNetURL: String) {
 
-    var client: OkHttpClient = OkHttpClient().newBuilder().build()
+    var client: OkHttpClient = OkHttpClient().newBuilder()
+            //TIMELY
+            .proxy(Proxy(HTTP, InetSocketAddress("127.0.0.1", 1080)))
+
+            .build()
 
     init {
         try {
