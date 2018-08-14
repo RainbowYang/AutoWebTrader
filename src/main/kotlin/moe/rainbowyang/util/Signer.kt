@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException
 import java.util.*
 
 /**
- * 用于生成 Okex的http请求中 所需的签名
+ * 用于生成post请求中所需的签名
  */
 object Signer {
 

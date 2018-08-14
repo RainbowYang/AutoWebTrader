@@ -24,7 +24,7 @@ class OkHttpHandle(checkNetURL: String) {
             client = OkHttpClient().newBuilder()
                     .proxy(Proxy(HTTP, InetSocketAddress("127.0.0.1", 1080)))
                     .build()!!
-            println("所检查网站已被封锁，所以启动默认代理127.0.0.1:1080")
+            println("所需平台网站已被封锁，所以启动默认代理127.0.0.1:1080")
         }
     }
 
