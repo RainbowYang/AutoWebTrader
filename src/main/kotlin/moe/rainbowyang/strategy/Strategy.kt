@@ -1,6 +1,7 @@
 package moe.rainbowyang.strategy
 
 import moe.rainbowyang.model.KLine
+import moe.rainbowyang.model.UserInfo
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.schedule
@@ -24,42 +25,38 @@ abstract class Strategy(var planPeriod: Long) {
     fun setPosition(percent: Double) {
         if (percent > 1 || percent < 0) throw UnsupportedOperationException("$percent is not allowed")
 
-        val amount = (percent - position()) * allAsCoin()
+        val account = account()
+        val amount = (percent - account.position()) * account.allAsCoin()
 
         trade(price(), amount)
     }
 
-    fun price() = kLine().last.close
     abstract fun kLine(): KLine
-
-    fun allAsCoin() = coin() + payment() / price()
-    fun allAsPayment() = coin() * price() + payment()
-    fun position() = coin() / allAsCoin()
-
-    fun coin() = coinFree() + coinfrozen()
-    abstract fun coinFree(): Double
-    abstract fun coinfrozen(): Double
-
-    fun payment() = paymentFree() + paymentfrozen()
-    abstract fun paymentFree(): Double
-    abstract fun paymentfrozen(): Double
-
+    abstract fun account(): UserInfo.Account
     abstract fun trade(price: Double, amount: Double): String
 
-    fun printUserInfo() {
-        println("--------------------------------")
+    fun price() = kLine().last.close
+
+    fun UserInfo.Account.allAsCoin() = coinAll + paymentAll / price()
+    fun UserInfo.Account.allAsPayment() = coinAll * price() + paymentAll
+    fun UserInfo.Account.position() = coinAll / allAsCoin()
+
+    fun printUserInfo() = with(account()) {
+        println("-----------------------------------")
         println("Time: ${SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(Date())}")
+        println("Price: 1 ${coin.toUpperCase()} = ${price()} ${payment.toUpperCase()}")
         println("Position: ${position()}")
-        println("Price: 1 Coin=${price()}Payment")
-        println("Coin:")
-        println("    free:${coinFree()}")
-        println("    frozen:${coinfrozen()}")
-        println("Payment:")
-        println("    free:${paymentFree()}")
-        println("    frozen:${paymentfrozen()}")
+        println("Coin(${coin.toUpperCase()}):")
+        println("    Free:$coinFree")
+        println("    Frozen:$coinfrozen")
+        println("    All:$coinAll")
+        println("Payment(${payment.toUpperCase()}):")
+        println("    Free:  $paymentFree")
+        println("    Frozen:$paymentfrozen")
+        println("    All:   $paymentAll")
         println("Total:")
-        println("    as Coin:${allAsCoin()}")
-        println("    as Payment:${allAsPayment()}")
-        println("--------------------------------")
+        println("    as Coin:${allAsCoin()} ${coin.toUpperCase()}")
+        println("    as Payment:${allAsPayment()} ${payment.toUpperCase()}")
+        println("-----------------------------------")
     }
 }

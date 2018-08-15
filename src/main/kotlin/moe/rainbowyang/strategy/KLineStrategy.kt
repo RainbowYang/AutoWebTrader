@@ -1,6 +1,7 @@
 package moe.rainbowyang.strategy
 
 import moe.rainbowyang.model.KLine
+import moe.rainbowyang.model.UserInfo
 import moe.rainbowyang.platform.APIKey
 import moe.rainbowyang.platform.okex.Okex
 
@@ -28,11 +29,8 @@ class KLineStrategy(val coin: String, val payment: String, planPeriod: Long, val
 
     override fun kLine(): KLine = okex.kline(coin, payment, period)
 
-    override fun coinFree() = okex.freeBill().getAmount(coin)
-    override fun coinfrozen() = okex.frozenBill().getAmount(coin)
-    override fun paymentFree() = okex.freeBill().getAmount(payment)
-    override fun paymentfrozen() = okex.frozenBill().getAmount(payment)
+    override fun account() = okex.userInfo().getAccount(coin, payment)
 
-    override fun trade(price: Double, amount: Double)=okex.trade(coin, payment, price, amount)
+    override fun trade(price: Double, amount: Double) = okex.trade(coin, payment, price, amount)
 
 }
