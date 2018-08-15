@@ -1,10 +1,7 @@
 package moe.rainbowyang.platform
 
 import moe.rainbowyang.model.*
-import moe.rainbowyang.util.API_KEY
-import moe.rainbowyang.util.OkHttpHandle
-import moe.rainbowyang.util.SIGN
-import moe.rainbowyang.util.Signer
+import moe.rainbowyang.util.*
 
 /**
  * 平台类，用于汇总对于平台的api操作
@@ -37,16 +34,16 @@ abstract class Platform(checkNet: String) {
     // Account-Unneeded START ↓
 
     /** 获取币币交易对的当前行情*/
-    open fun ticker(trans: String, payment: String): Ticker = throw UnsupportedOperationException()
+    open fun ticker(coin: String, payment: String): Ticker = throw UnsupportedOperationException()
 
     /** 获取币币市场深度，默认200*/
-    open fun depth(trans: String, payment: String, size: Int = 200): Depth = throw UnsupportedOperationException()
+    open fun depth(coin: String, payment: String, size: Int = 200): Depth = throw UnsupportedOperationException()
 
     /** 获取币币交易信息(60条)*/
-    open fun trades(trans: String, payment: String, since: Long): Trades = throw UnsupportedOperationException()
+    open fun trades(coin: String, payment: String, since: Long): Trades = throw UnsupportedOperationException()
 
     /** 获取币币K线数据*/
-    open fun kline(trans: String, payment: String, period: String, size: Int): KLine =
+    open fun kline(coin: String, payment: String, period: String, size: Int = 600): KLine =
             throw UnsupportedOperationException()
 
     // Account-Unneeded END ↑
@@ -57,10 +54,33 @@ abstract class Platform(checkNet: String) {
     open fun userInfo(): UserInfo = throw UnsupportedOperationException()
 
     /** 发送交易请求 */
-    open fun trade(trans: String, payment: String, type: String, price: Double, amount: Double): String =
+    open fun trade(coin: String, payment: String, type: String, price: Double, amount: Double): String =
             throw UnsupportedOperationException()
 
-    // Account-Needed END ↑
+    /**
+     * 发送交易请求
+     *
+     * 自动判断买进还是卖出
+     *
+     * @param amount 当amount为正时，为买入；负时，卖出
+     *
+     */
+    fun trade(coin: String, payment: String, price: Double, amount: Double): String =
+            if (amount >= 0) {
+                trade(coin, payment, BUY, price, amount)
+            } else {
+                trade(coin, payment, SELL, price, -amount)
+            }
+
+    /** 发送购买请求 */
+    open fun buy(coin: String, payment: String, price: Double, amount: Double): String =
+            trade(coin, payment, BUY, price, amount)
+
+    /** 发送卖出请求 */
+    open fun sell(coin: String, payment: String, price: Double, amount: Double): String =
+            trade(coin, payment, SELL, price, amount)
+
+// Account-Needed END ↑
 
     protected infix fun String.with(that: String) = this + "_" + that
 
@@ -71,7 +91,7 @@ abstract class Platform(checkNet: String) {
     fun post(url: String, vararg parameter: Pair<String, String>): String {
         isAccountRegistered()
 
-        val sign = Signer.buildSign(linkedMapOf(API_KEY to apiKey, *parameter), account!!.secretKey)
+        val sign = Signer.buildSign(linkedMapOf(API_KEY to apiKey, *parameter), secretKey)
         return okHttpHandle.post(url, linkedMapOf(API_KEY to apiKey, *parameter, SIGN to sign))
     }
 }

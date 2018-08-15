@@ -10,8 +10,8 @@ data class UserInfo(val info: Info) {
                             val ltc: Double, val okb: Double, val xrp: Double,
                             val usdt: Double
             ) {
-                fun get(coin: String) =
-                        this::class.java.getDeclaredField(coin.toLowerCase()).get(this).toString().toDouble()
+                fun getAmount(coin: String) =
+                        this::class.java.getDeclaredField(coin).get(this).toString().toDouble()
 
             }
         }
