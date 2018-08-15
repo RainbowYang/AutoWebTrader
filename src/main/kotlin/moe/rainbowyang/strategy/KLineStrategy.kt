@@ -1,7 +1,7 @@
 package moe.rainbowyang.strategy
 
 import moe.rainbowyang.model.KLine
-import moe.rainbowyang.platform.Account
+import moe.rainbowyang.platform.APIKey
 import moe.rainbowyang.platform.okex.Okex
 
 /**
@@ -13,7 +13,7 @@ class KLineStrategy(val coin: String, val payment: String, planPeriod: Long, val
     val okex = Okex()
 
     init {
-        okex.register(Account())
+        okex.register(APIKey())
     }
 
     override fun plan() {

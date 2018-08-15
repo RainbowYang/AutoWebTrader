@@ -10,7 +10,7 @@ import moe.rainbowyang.util.*
  */
 abstract class Platform(checkNet: String) {
 
-    var account: Account? = null
+    var account: APIKey? = null
 
     val apiKey get() = account!!.apiKey
     val secretKey get() = account!!.secretKey
@@ -18,7 +18,7 @@ abstract class Platform(checkNet: String) {
     val okHttpHandle = OkHttpHandle(checkNet)
 
     /** 注册api账号*/
-    fun register(account: Account) {
+    fun register(account: APIKey) {
         this.account = account
         account.apiKey
         account.secretKey
