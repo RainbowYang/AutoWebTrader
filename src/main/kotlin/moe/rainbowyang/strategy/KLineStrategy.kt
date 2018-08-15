@@ -1,36 +1,26 @@
 package moe.rainbowyang.strategy
 
-import moe.rainbowyang.model.KLine
-import moe.rainbowyang.model.UserInfo
-import moe.rainbowyang.platform.APIKey
-import moe.rainbowyang.platform.okex.Okex
-
 /**
  * @author Rainbow Yang
  */
-class KLineStrategy(val coin: String, val payment: String, planPeriod: Long, val period: String) :
-        Strategy(planPeriod) {
-
-    val okex = Okex()
-
-    init {
-        okex.register(APIKey())
-    }
-
+abstract class KLineStrategy(planPeriod: Long) : Strategy(planPeriod) {
     override fun plan() {
-        val kline = kLine()
 
-        if (price() > kline.MA10) {
-            setPosition(0.8)
-        } else {
-            setPosition(0.2)
+        printUserInfo(account())
+
+        val kLine = kLine()
+
+        val MA5 = kLine.MA5
+        val MA10 = kLine.MA10
+        val MA20 = kLine.MA20
+        val MA30 = kLine.MA30
+
+        if (MA5 > MA10 && MA10 > MA20 && MA20 > MA30) {
+            setPosition(1.0)
+        } else if (MA5 < MA10 && MA10 < MA20 && MA20 < MA30) {
+            setPosition(0.0)
         }
+
+
     }
-
-    override fun kLine(): KLine = okex.kline(coin, payment, period)
-
-    override fun account() = okex.userInfo().getAccount(coin, payment)
-
-    override fun trade(price: Double, amount: Double) = okex.trade(coin, payment, price, amount)
-
 }

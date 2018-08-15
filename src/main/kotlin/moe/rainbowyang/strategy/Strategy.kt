@@ -15,7 +15,6 @@ abstract class Strategy(var planPeriod: Long) {
     fun start() {
         Timer().schedule(0, planPeriod) {
             plan()
-            kLine().last.close
         }
     }
 
@@ -26,9 +25,11 @@ abstract class Strategy(var planPeriod: Long) {
         if (percent > 1 || percent < 0) throw UnsupportedOperationException("$percent is not allowed")
 
         val account = account()
-        val amount = (percent - account.position()) * account.allAsCoin()
+        val changeAmount = (percent - account.position()) * account.allAsCoin()
 
-        trade(price(), amount)
+        println("ChangePositionTo:  $percent")
+        println(trade(price(), changeAmount))
+        println("-------------------------------------")
     }
 
     abstract fun kLine(): KLine
@@ -41,11 +42,10 @@ abstract class Strategy(var planPeriod: Long) {
     fun UserInfo.Account.allAsPayment() = coinAll * price() + paymentAll
     fun UserInfo.Account.position() = coinAll / allAsCoin()
 
-    fun printUserInfo() = with(account()) {
-        println("-----------------------------------")
+    fun printUserInfo(account: UserInfo.Account) = with(account) {
+        println("-------------------------------------")
         println("Time: ${SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS").format(Date())}")
         println("Price: 1 ${coin.toUpperCase()} = ${price()} ${payment.toUpperCase()}")
-        println("Position: ${position()}")
         println("Coin(${coin.toUpperCase()}):")
         println("    Free:$coinFree")
         println("    Frozen:$coinfrozen")
@@ -57,6 +57,7 @@ abstract class Strategy(var planPeriod: Long) {
         println("Total:")
         println("    as Coin:${allAsCoin()} ${coin.toUpperCase()}")
         println("    as Payment:${allAsPayment()} ${payment.toUpperCase()}")
-        println("-----------------------------------")
+        println("Position: ${position()}")
+        println("-------------------------------------")
     }
 }
