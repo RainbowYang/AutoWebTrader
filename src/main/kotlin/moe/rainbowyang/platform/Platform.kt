@@ -2,6 +2,7 @@ package moe.rainbowyang.platform
 
 import moe.rainbowyang.model.*
 import moe.rainbowyang.util.*
+import java.io.IOException
 
 /**
  * 平台类，用于汇总对于平台的api操作
@@ -34,26 +35,31 @@ abstract class Platform(checkNet: String) {
     // Account-Unneeded START ↓
 
     /** 获取币币交易对的当前行情*/
+    @Throws(IOException::class)
     open fun ticker(coin: String, payment: String): Ticker = throw UnsupportedOperationException()
 
     /** 获取币币市场深度，默认200*/
+    @Throws(IOException::class)
     open fun depth(coin: String, payment: String, size: Int = 200): Depth = throw UnsupportedOperationException()
 
     /** 获取币币交易信息(60条)*/
+    @Throws(IOException::class)
     open fun trades(coin: String, payment: String, since: Long): Trades = throw UnsupportedOperationException()
 
     /** 获取币币K线数据*/
-    open fun kline(coin: String, payment: String, period: String, size: Int = 600): KLine =
-            throw UnsupportedOperationException()
+    @Throws(IOException::class)
+    open fun kLine(coin: String, payment: String, period: String): KLine = throw UnsupportedOperationException()
 
     // Account-Unneeded END ↑
 
     // Account-Needed Start ↓
 
     /** 获取用户账户信息 */
+    @Throws(IOException::class)
     open fun userInfo(): UserInfo = throw UnsupportedOperationException()
 
     /** 发送交易请求 */
+    @Throws(IOException::class)
     open fun trade(coin: String, payment: String, type: String, price: Double, amount: Double): String =
             throw UnsupportedOperationException()
 
@@ -84,10 +90,12 @@ abstract class Platform(checkNet: String) {
 
     protected infix fun String.with(that: String) = this + "_" + that
 
+    @Throws(IOException::class)
     fun get(url: String, vararg parameter: Pair<String, String>): String =
             okHttpHandle.get(url, linkedMapOf(*parameter))
 
     // post with apiKey and sign
+    @Throws(IOException::class)
     fun post(url: String, vararg parameter: Pair<String, String>): String {
         isAccountRegistered()
 

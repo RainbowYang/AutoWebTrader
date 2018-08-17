@@ -15,8 +15,8 @@ class Okex : Platform(OKEX_URL) {
     override fun trades(coin: String, payment: String, since: Long) =
             get(TRADES_URL, SYMBOL to (coin with payment), SINCE to since).fromJson<Trades>()
 
-    override fun kline(coin: String, payment: String, period: String, size: Int) =
-            get(KLINE_URL, SYMBOL to (coin with payment), TYPE to period, SIZE to size).fromJson<KLine>()
+    override fun kLine(coin: String, payment: String, period: String) =
+            get(KLINE_URL, SYMBOL to (coin with payment), TYPE to period).fromJson<KLine>()
 
 
     override fun userInfo() = post(USERINFO_URL).fromJson<UserInfo>()

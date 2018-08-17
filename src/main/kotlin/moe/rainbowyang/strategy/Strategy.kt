@@ -2,6 +2,7 @@ package moe.rainbowyang.strategy
 
 import moe.rainbowyang.model.KLine
 import moe.rainbowyang.model.UserInfo
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.schedule
@@ -14,11 +15,16 @@ abstract class Strategy(var planPeriod: Long) {
 
     fun start() {
         Timer().schedule(0, planPeriod) {
-            plan()
+            try {
+                plan()
+            } catch (e: IOException) {
+                println("Net failed")
+            }
         }
     }
 
     /** 具体策略 */
+    @Throws(IOException::class)
     abstract fun plan()
 
     fun setPosition(percent: Double) {

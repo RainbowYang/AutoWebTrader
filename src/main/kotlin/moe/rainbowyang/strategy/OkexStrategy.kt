@@ -16,7 +16,7 @@ class OkexStrategy(val coin: String, val payment: String, planPeriod: Long, val 
         okex.register(APIKey())
     }
 
-    override fun kLine(): KLine = okex.kline(coin, payment, period)
+    override fun kLine(): KLine = okex.kLine(coin, payment, period)
     override fun account() = okex.userInfo().getAccount(coin, payment)
     override fun trade(price: Double, amount: Double) = okex.trade(coin, payment, price, amount)
 

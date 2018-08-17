@@ -12,11 +12,11 @@ class KLine : LinkedList<KLine.KPoint>() {
     val MA20 get() = MA(20)
     val MA30 get() = MA(30)
 
-    fun MA(range: Int, from: Int = size - range): Double {
+    fun MA(range: Int, until: Int = size): Double {
 
         var sum = 0.0
 
-        (0 until range).forEach { sum += this[from + it].close }
+        (until - range until until).forEach { sum += this[it].close }
 
         return sum / range
     }
