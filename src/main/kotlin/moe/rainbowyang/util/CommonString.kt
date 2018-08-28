@@ -16,6 +16,8 @@ const val BTC = "btc"
 const val USDT = "usdt"
 const val OKB = "okb"
 const val XRP = "xrp"
+const val LTC = "ltc"
+const val ETH = "eth"
 
 const val ONE_MIN = "1min"
 const val THREE_MIN = "3min"
